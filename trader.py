@@ -30,7 +30,7 @@ def ask(text, checked):
     while True:
         say(text)
         n = get_int()
-        if n != None and checked(n):
+        if n is not None and checked(n):
             return n
 
 
@@ -46,7 +46,8 @@ def sgn(x):
         return 0
 
 
-rint = lambda x: int(round(x))
+def rint(x): return int(round(x))
+
 
 INTRO = """
      THE DATE IS JAN 1, 2070 AND INTERSTELLAR FLIGHT
@@ -354,7 +355,7 @@ def star_map(g):
         y_hi = y * 10 / 3
         y_lo = (y + 1) * 10 / 3
         for s in range(1, len(g.stars)):
-            if g.stars[s].y < y_lo and g.stars[s].y >= y_hi:
+            if y_lo > g.stars[s].y >= y_hi:
                 x = rint(25 + g.stars[s].x / 2)
                 name = g.stars[s].name
                 line[x:x + len(name) + 1] = "*" + name
@@ -595,8 +596,7 @@ def buy_rounds(g, index, units):
             g.ship.sum += price
             star.goods[index] += units
             return
-        elif price > (1 + price_window(g, index, units, r)
-        ) * star.prices[index] * units:
+        elif price > (1 + price_window(g, index, units, r)) * star.prices[index] * units:
             break
         else:
             star.prices[index] = 0.8 * star.prices[index] + 0.2 * price / units
@@ -607,7 +607,7 @@ def buy(g):
     say("\nWE ARE BUYING:\n")
     for i in range(6):
         star_units = rint(g.ship.star.goods[i])
-        if star_units < 0 and g.ship.goods[i] > 0:
+        if star_units < 0 < g.ship.goods[i]:
             say("     %s WE NEED %d UNITS.\n" % (GOODS_NAMES[i], -star_units))
             while True:
                 units = ask("HOW MANY ARE YOU SELLING ", lambda n: n >= 0)
@@ -656,8 +656,7 @@ def sell_rounds(g, index, units):
                         sold(g, index, units, price)
                         return
                 break
-        elif price < (1 - price_window(g, index, units, r)
-        ) * star.prices[index] * units:
+        elif price < (1 - price_window(g, index, units, r)) * star.prices[index] * units:
             break
         star.prices[index] = 0.8 * star.prices[index] + 0.2 * price / units
     say("     THAT'S TOO LOW\n")
